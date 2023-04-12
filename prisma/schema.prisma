@@ -11,25 +11,27 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  phoneNumber String @unique
-  password String @unique
-  status String @default("active")  
-  notificationToken NotificationToken?
-}
-
-model Notification {
-  id Int @id @default(autoincrement())
-  notification_token String 
-  title String 
-  body String
-  notificationToken NotificationToken?
+  id                 Int                 @id @default(autoincrement())
+  phoneNumber        String              @unique
+  password           String              @unique
+  status             String              @default("ACTIVE")
+  notificationTokens NotificationToken[]
 }
 
 model NotificationToken {
-  id Int @id @default(autoincrement())
-  user User @relation(fields: [userId] , references: [id])
-  userId Int @unique
-  notification Notification @relation(fields: [notificationId] , references: [id])
-  notificationId Int @unique
+  id                 Int            @id @default(autoincrement())
+  user               User           @relation(fields: [userId], references: [id])
+  userId             Int            
+  device_type        String
+  notification_token String
+  notifications      Notification[]
+  status String @default("ACTIVE")
+}
+
+model Notification {
+  id                  Int               @id @default(autoincrement())
+  title               String
+  body                String
+  notificationToken   NotificationToken @relation(fields: [notificationTokenId], references: [id])
+  notificationTokenId Int
 }
