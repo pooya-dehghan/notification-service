@@ -34,4 +34,5 @@ model Notification {
   body                String
   notificationToken   NotificationToken @relation(fields: [notificationTokenId], references: [id])
   notificationTokenId Int
+  status String @default("ACTIVE")
 }
