@@ -10,12 +10,13 @@ import { User } from '@prisma/client';
 export class UsersService {
   constructor(private readonly notificationService : NotificationService , private prismaService : PrismaService){}
   
-  create(user : CreateUserDto): Promise<User>{
-    let newUser = this.prismaService.user.create({
+  async create(user : CreateUserDto): Promise<User> {
+    let newUser = await this.prismaService.user.create({
       data : {
        ...user
       }
     })
+    delete newUser.password
     return newUser
   }
 
