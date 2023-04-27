@@ -28,7 +28,7 @@ export class NotificationService {
         id: user.id,
       },
       data: {
-        status: 'INACTIVE',
+        status: 'ACTIVE',
       },
     });
     const createdNotificationToken =
@@ -95,11 +95,12 @@ export class NotificationService {
           notification: { title, body },
           token: notification_token.notification_token,
           android: { priority: 'high' },
-        }).catch((error : any) => {
-      console.error(error)
-    });
+        })
+        .catch((error: any) => {
+          console.error(error);
+        });
     } catch (error) {
-        return error  
+      return error;
     }
   };
 }
