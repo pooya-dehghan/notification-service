@@ -1,26 +1,19 @@
 import { IsString, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateUserDto {
+export class UpdateUserDto {
   @ApiProperty({
-    description: 'name of the user',
+    description: 'updating name for user',
     type: String,
   })
   @IsString()
   @IsNotEmpty()
   userName: string;
   @ApiProperty({
-    description: 'phone number of the user which should be uniqu',
+    description: 'updating phone number for the user which should be unique',
     type: String,
   })
   @IsString()
   @IsNotEmpty()
   phoneNumber: string;
-  @ApiProperty({
-    description: 'password of the user',
-    type: String,
-  })
-  @IsString()
-  @IsNotEmpty()
-  password: string;
 }
