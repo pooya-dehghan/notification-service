@@ -1,21 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import * as firebase from 'firebase-admin';
 import * as path from 'path';
 import { NotificationDto } from './dto/create_notification.dto';
 import { UpdateNotificationDto } from './dto/update_notification.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
+import * as firebase from 'firebase-admin';
 
-const firebaseConfig = {
-  apiKey: 'AIzaSyAX1EFyU4OU32MK3DdMYX52GmCp_fOCxJ0',
-  authDomain: 'notification-service-366f8.firebaseapp.com',
-  projectId: 'notification-service-366f8',
-  storageBucket: 'notification-service-366f8.appspot.com',
-  messagingSenderId: '976028950264',
-  appId: '1:976028950264:web:65ce91b122ed6017e7a50d',
-  measurementId: 'G-6WFYCTXLDN',
-};
-firebase.initializeApp(firebaseConfig);
+firebase.initializeApp({
+  credential: firebase.credential.cert(
+    path.join(__dirname, '..', '..', 'firebase-adminsdk.json'),
+  ),
+});
 @Injectable()
 export class NotificationService {
   constructor(private prismaService: PrismaService) {}
@@ -70,12 +65,16 @@ export class NotificationService {
     return await this.prismaService.notification.findMany();
   };
 
-  sendPush = async (user: any, title: string, body: string): Promise<void> => {
+  sendPush = async (
+    user_id: number,
+    title: string,
+    body: string,
+  ): Promise<void> => {
     try {
       const notification_token =
         await this.prismaService.notificationToken.findFirst({
           where: {
-            userId: user.id,
+            userId: user_id,
             status: 'ACTIVE',
           },
         });

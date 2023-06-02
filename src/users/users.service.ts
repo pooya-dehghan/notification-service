@@ -5,6 +5,7 @@ import { CreateUserDto } from './dto/create_user.dto';
 import { NotificationDto } from '../notification/dto/create_notification.dto';
 import { UpdateNotificationDto } from 'src/notification/dto/update_notification.dto';
 import { User } from '@prisma/client';
+import { UpdateUserDto } from './dto/update_dto.dto';
 
 @Injectable()
 export class UsersService {
@@ -23,7 +24,7 @@ export class UsersService {
     return newUser;
   }
 
-  updateProfile = async (user_id: number, update_dto: any): Promise<any> => {
+  updateProfile = async (user_id: number, update_dto: UpdateUserDto): Promise<any> => {
     try {
       const user = await this.prismaService.user.findUnique({
         where: {
@@ -46,12 +47,13 @@ export class UsersService {
       if (saved_user) {
         await this.notificationService
           .sendPush(
-            updatedUser,
+            updatedUser.id,
             'profile_updated',
             'your profile has been updated successfuly',
           )
           .catch((err) => {
             console.log('Error sending push notification', err);
+            throw new BadRequestException();
           });
       }
       return saved_user;

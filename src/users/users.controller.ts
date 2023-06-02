@@ -6,6 +6,7 @@ import {
   Body,
   Put,
   Param,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create_user.dto';
 import { UpdateUserDto } from './dto/update_dto.dto';
@@ -38,27 +39,46 @@ export class UsersController {
   @ApiOkResponse({ type: UserEntity, isArray: true })
   @ApiBody({ type: UpdateUserDto })
   @HttpCode(HttpStatus.OK)
-  async updateProfile(@Body() update_dto: any, @Param('id') user_id: number) {
-    return await this.usersService.updateProfile(Number(user_id), update_dto);
+  async updateProfile(
+    @Body() update_dto: any,
+    @Param(
+      'id',
+      new ParseIntPipe({
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+      }),
+    )
+    user_id: number,
+  ) {
+    return await this.usersService.updateProfile(user_id, update_dto);
   }
 
-  @Put('push/enable')
+  @Put('push/enable/:id')
   @ApiOkResponse({ type: UserEntity, isArray: true })
   @HttpCode(HttpStatus.OK)
   async enablePush(
     @Body() update_dto: NotificationDto,
-    @Param('id') user_id: number,
+    @Param('id', ParseIntPipe) user_id: number,
   ) {
     return await this.usersService.enablePush(user_id, update_dto);
   }
 
-  @Put('push/disable')
+  @Put('push/disable/:id')
   @ApiOkResponse({ type: UserEntity })
   @HttpCode(HttpStatus.OK)
   async disablePush(
-    @Param('id') user_id: number,
+    @Param('id', ParseIntPipe) user_id: number,
     @Body() update_dto: UpdateNotificationDto,
   ) {
     return await this.usersService.disablePush(user_id, update_dto);
+  }
+
+  @Put('update/:id')
+  @ApiOkResponse({ type: UserEntity })
+  @HttpCode(HttpStatus.OK)
+  async updateUserProfile(
+    @Param('id', ParseIntPipe) user_id: number,
+    @Body() update_dto: UpdateUserDto,
+  ) {
+    this.usersService.updateProfile(user_id , update_dto)
   }
 }
