@@ -93,10 +93,9 @@ export class NotificationService {
         .send({
           notification: { title, body },
           token: notification_token.notification_token,
-          android: { priority: 'high' },
         })
         .catch((error: any) => {
-          console.error(error);
+          console.error('error while sending message: ', error);
         });
     } catch (error) {
       return error;
